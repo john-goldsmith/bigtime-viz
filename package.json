@@ -1,0 +1,46 @@
+{
+  "name": "bigtime-viz",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "clean:dist": "rm -rf ./dist",
+    "start": "run-s clean:* serve",
+    "serve": "$(npm bin)/webpack-dev-server --config config/webpack.dev.js --progress --profile",
+    "build": "$(npm bin)/webpack --config config/webpack.prod.js --progress --profile --bail"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/john-goldsmith/bigtime-viz.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/john-goldsmith/bigtime-viz/issues"
+  },
+  "homepage": "https://github.com/john-goldsmith/bigtime-viz#readme",
+  "devDependencies": {
+    "babel-core": "^6.14.0",
+    "babel-loader": "^6.2.5",
+    "babel-preset-es2015": "^6.14.0",
+    "bootstrap-datepicker": "^1.6.4",
+    "bootstrap-sass": "^3.3.7",
+    "css-loader": "^0.25.0",
+    "d3": "^4.2.3",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.9.0",
+    "html-webpack-plugin": "^2.22.0",
+    "jquery": "^3.1.0",
+    "moment": "^2.15.0",
+    "node-sass": "^3.10.0",
+    "npm-run-all": "^3.1.0",
+    "pug": "^2.0.0-beta6",
+    "pug-cli": "^1.0.0-alpha6",
+    "pug-loader": "^2.3.0",
+    "sass-loader": "^4.0.2",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.2",
+    "webpack-dev-server": "^1.15.2"
+  }
+}
