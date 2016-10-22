@@ -2,6 +2,12 @@
 // customising the .env file in your project's root folder.
 require('dotenv').config();
 
+const BigTime = require('bigtime-sdk'),
+      bigTime = new BigTime({
+        username: process.env.BIGTIME_USERNAME,
+        password: process.env.BIGTIME_PASSWORD
+      });
+
 // Require keystone
 var keystone = require('keystone');
 
@@ -18,6 +24,7 @@ keystone.init({
 	'favicon': 'public/favicon.ico',
 	'views': 'templates/views',
 	'view engine': 'pug',
+  'view cache': false,
 
 	'auto update': true,
 	'session': true,
@@ -46,6 +53,20 @@ keystone.set('nav', {
 	users: 'users',
 });
 
-// Start Keystone to connect to your database and initialise the web server
-
-keystone.start();
+/**
+ * It probably isn't the best to create a BigTime session when the Keystone
+ * app initially boots (especially in a production environment), but it's
+ * good enough for development purposes.
+ */
+bigTime.createSession()
+  .then(
+    () => {
+      keystone.set('bigTime', bigTime);
+      // Start Keystone to connect to your database and initialise the web server
+      keystone.start()
+    },
+    () => {
+      console.log('Error creating BigTime session.');
+      process.exit(1);
+    }
+  );

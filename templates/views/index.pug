@@ -1,41 +1,56 @@
 extends ../layouts/default
 
 block content
+  //- +staff-selector(staff)
+  //- +time-range-selector()
   div(class="row")
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
-          h3(class="panel-title") Gantt
+          a(href="/gantt")
+            h3(class="panel-title") Gantt
         div(class="panel-body")
-          | Panel content
-          i(class="fa fa-line-chart" aria-hidden="true")
-          i(class="fa fa-pie-chart" aria-hidden="true")
-          i(class="fa fa-bar-chart" aria-hidden="true")
-          i(class="fa fa-area-chart" aria-hidden="true")
-          i(class="fa fa-signal" aria-hidden="true")
+          a(href="/gantt")
+            img(src="/images/chart.png").img-responsive
+          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
-          h3(class="panel-title") % of time per project
-        div(class="panel-body") Panel content
+          a(href="/percentage")
+            h3(class="panel-title") % of time per project
+        div(class="panel-body")
+          a(href="/percentage")
+            img(src="/images/chart.png").img-responsive
+          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
-          h3(class="panel-title") Total hours logged across all people and all projects
-        div(class="panel-body") Panel content
+          a(href="/total-hours-company")
+            h3(class="panel-title") Total hours logged across all people and all projects
+        div(class="panel-body")
+          a(href="/total-hours-company")
+            img(src="/images/chart.png").img-responsive
+          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
   div(class="row")
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
-          h3(class="panel-title") Total hours logged by project
-        div(class="panel-body") Panel content
+          a(href="/total-hours-project")
+            h3(class="panel-title") Total hours logged by project
+        div(class="panel-body")
+          a(href="/total-hours-project")
+            img(src="/images/chart.png").img-responsive
+          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
-          h3(class="panel-title") Total hours logged by all people
-        div(class="panel-body") Panel content
+          a(href="/total-hours-people")
+            h3(class="panel-title") Total hours logged by all people
+        div(class="panel-body")
+          a(href="/total-hours-people")
+            img(src="/images/chart.png").img-responsive
+          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
   //- div(class="input-group input-daterange")
   //-   input(type="text" class="form-control" value="2012-04-05")
   //-   span(class="input-group-addon") to
   //-   input(type="text" class="form-control" value="2012-04-19")
-  div(id="demo")

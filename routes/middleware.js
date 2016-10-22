@@ -8,7 +8,7 @@
  * modules in your project's /lib directory.
  */
 var _ = require('lodash');
-
+var keystone = require('keystone');
 
 /**
 	Initialises the standard view locals
@@ -52,3 +52,9 @@ exports.requireUser = function (req, res, next) {
 		next();
 	}
 };
+
+exports.injectBigTime = function (req, res, next) {
+  const bigTime = keystone.get('bigTime');
+  res.locals.bigTime = bigTime;
+  next();
+}

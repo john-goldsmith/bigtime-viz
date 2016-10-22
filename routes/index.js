@@ -24,6 +24,7 @@ var importRoutes = keystone.importer(__dirname);
 
 // Common Middleware
 keystone.pre('routes', middleware.initLocals);
+keystone.pre('routes', middleware.injectBigTime);
 keystone.pre('render', middleware.flashMessages);
 
 // Import Route Controllers
@@ -35,7 +36,13 @@ var routes = {
 exports = module.exports = function (app) {
 	// Views
   app.get('/', routes.views.index);
-	app.get('/foo', routes.views.foo);
+  app.get('/gantt', routes.views.ganttRedirect);
+  app.get('/gantt/:id', routes.views.gantt);
+  app.get('/percentage', routes.views.percentageRedirect);
+  app.get('/percentage/:id', routes.views.percentage);
+  app.get('/total-hours-company', routes.views.totalHoursCompany);
+  app.get('/total-hours-project', routes.views.totalHoursProject);
+  app.get('/total-hours-people', routes.views.totalHoursPeople);
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);

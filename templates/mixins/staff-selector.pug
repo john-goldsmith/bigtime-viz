@@ -1,0 +1,7 @@
+mixin staff-selector(staff)
+  if staff
+    .form-group
+      label(for="staff") Employee
+      select#staff.form-control
+        each person in staff
+          option(value=person.StaffSID)= person.FName + ' ' + person.SName

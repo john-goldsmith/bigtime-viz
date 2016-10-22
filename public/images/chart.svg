@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="270px" height="140px" viewBox="0 0 270 140" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:sketch="http://www.bohemiancoding.com/sketch/ns">
+    <!-- Generator: Sketch 3.2.2 (9983) - http://www.bohemiancoding.com/sketch -->
+    <title>chart-thumbnail-velocitychart</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd" sketch:type="MSPage">
+        <g id="chart-thumbnail-velocitychart" sketch:type="MSArtboardGroup">
+            <rect id="1" fill="#CCCCCC" sketch:type="MSShapeGroup" x="20" y="20" width="15" height="100"></rect>
+            <rect id="6" fill="#8EB021" sketch:type="MSShapeGroup" x="35" y="36.2790698" width="15" height="83.7209302"></rect>
+            <rect id="1" fill="#CCCCCC" sketch:type="MSShapeGroup" x="70" y="28" width="15" height="92"></rect>
+            <rect id="6" fill="#8EB021" sketch:type="MSShapeGroup" x="85" y="40" width="15" height="80"></rect>
+            <rect id="1" fill="#CCCCCC" sketch:type="MSShapeGroup" x="120" y="36" width="15" height="84"></rect>
+            <rect id="6" fill="#8EB021" sketch:type="MSShapeGroup" x="135" y="48" width="15" height="72"></rect>
+            <rect id="1" fill="#CCCCCC" sketch:type="MSShapeGroup" x="170" y="48" width="15" height="72"></rect>
+            <rect id="6" fill="#8EB021" sketch:type="MSShapeGroup" x="185" y="33" width="15" height="87"></rect>
+            <rect id="1" fill="#CCCCCC" sketch:type="MSShapeGroup" x="220" y="28" width="15" height="92"></rect>
+            <rect id="6" fill="#8EB021" sketch:type="MSShapeGroup" x="235" y="20" width="15" height="100"></rect>
+        </g>
+    </g>
+</svg>

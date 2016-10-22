@@ -1,0 +1,38 @@
+-
+  const defaultTimeRanges = [
+    {
+      key: '1 week',
+      value: '1w'
+    },
+    {
+      key: '1 month',
+      value: '1M'
+    },
+    {
+      key: '3 months',
+      value: '3M'
+    },
+    {
+      key: '6 months',
+      value: '6M'
+    },
+    {
+      key: '1 year',
+      value: '1y'
+    },
+    {
+      key: 'Max',
+      value: 'max'
+    }
+    // {
+    //   key: 'Custom',
+    //   value: 'custom'
+    // }
+  ]
+
+mixin time-range-selector(selectedTimeRange, timeRanges = defaultTimeRanges)
+  .form-group
+    label(for="time-range") Time range
+    select#time-range.form-control
+      each timeRange in timeRanges
+        option(value=timeRange.value selected=timeRange.value === selectedTimeRange)= timeRange.key

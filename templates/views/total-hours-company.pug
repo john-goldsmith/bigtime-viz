@@ -1,0 +1,15 @@
+extends ../layouts/default
+
+block content
+  h1 Total Hours Company-wide
+  p.lead Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+  .row
+    .col-sm-2.col-sm-offset-10
+      +time-range-selector(selectedTimeRange)
+  .row
+    .col-xs-12
+      != svg
+  //- div(class="input-group input-daterange")
+  //-   input(type="text" class="form-control" value="2012-04-05")
+  //-   span(class="input-group-addon") to
+  //-   input(type="text" class="form-control" value="2012-04-19")
