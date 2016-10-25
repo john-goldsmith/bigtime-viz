@@ -5,14 +5,31 @@ const keystone = require('keystone'),
 
 exports = module.exports = function (req, res) {
 
+  const locals = res.locals;
+
+  if (!req.query.project) {
+    locals.bigTime.projectsPicklist()
+      .then(
+        response => {
+          // req.cookies
+          res.redirect(`?project=${response.body[0].Id}`);
+        },
+        err => {
+          console.log('Error fetching projects picklist', err);
+          res.redirect('/');
+        }
+      );
+    return;
+  }
+
   const d3n = new d3Node({
           d3Module: d3
         }),
         view = new keystone.View(req, res),
-        locals = res.locals,
-        reportId = process.env.BIGTIME_TOTAL_HOURS_COMPANY_REPORT_ID,
+        reportId = process.env.BIGTIME_TOTAL_HOURS_BY_PROJECT_REPORT_ID,
         timeRanges = keystone.get('timeRanges'),
         selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
+        selectedProject = req.query.project,
         margin = {
           top: 20,
           right: 20,
@@ -37,9 +54,14 @@ exports = module.exports = function (req, res) {
 
   locals.timeRanges = timeRanges;
   locals.selectedTimeRange = selectedTimeRange;
-  
+  locals.selectedProject = selectedProject;
+
+  res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
+  res.cookie(`${keystone.get('namespace')}.lastSelectedProject`, selectedProject);
+
   const body = {
-    DT_END: moment().format('YYYY-MM-DD')
+    DT_END: moment().format('YYYY-MM-DD'),
+    PRJ_SID: selectedProject
   }
 
   if (selectedTimeRange.toLowerCase() === 'max') {
@@ -49,10 +71,16 @@ exports = module.exports = function (req, res) {
     body.DT_BEGIN = moment().subtract(Number(duration[0]), duration[1]).format('YYYY-MM-DD');
   }
 
-  locals.bigTime.updateReportById(reportId, body)
+  locals.bigTime.projectsPicklist()
+    .then(
+      response => {
+        locals.projects = response.body;
+        return locals.bigTime.updateReportById(reportId, body);
+      }
+    )
     .then(
       () => {
-        return locals.bigTime.getReportById(reportId)
+        return locals.bigTime.getReportById(reportId);
       }
     )
     .then(
@@ -63,8 +91,11 @@ exports = module.exports = function (req, res) {
           if (field.FieldNm === 'tmdt') dateIndex = index;
           if (field.FieldNm === 'tmhrsin') hoursIndex = index;
         });
-        let data = response.body.Data.filter(item => item[hoursIndex] >= 100)
-                                       .map(item => ({date: item[dateIndex], hours: item[hoursIndex]}));
+        if (!response.body.Data) {
+          view.render('total-hours-by-project');
+          return;
+        }
+        let data = response.body.Data.map(item => ({date: item[dateIndex], hours: item[hoursIndex]}));
         data.forEach(d => {
           d.date = formatDate(d.date);
           d.hours = Number(d.hours);
@@ -95,16 +126,16 @@ exports = module.exports = function (req, res) {
            .attr('x', 0 - (height / 2))
            .attr('dy', '1em')
            .style('text-anchor', 'middle')
-           .text('Hours'); 
+           .text('Hours');
 
         locals.svg = d3n.svgString();
-        view.render('total-hours-company');
+        view.render('total-hours-by-project');
       }
     )
     .catch(
       err => {
         console.log('Error generating report.', err);
-        res.redirect('index');
+        res.redirect('/');
       }
     )
 

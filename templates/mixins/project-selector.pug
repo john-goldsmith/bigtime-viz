@@ -1,0 +1,17 @@
+-
+  function getProjectLabel(project) {
+    if (project.Group) return `${project.Group}: ${project.Name}`;
+    return project.Name;
+  }
+
+  function isSelected(project, selectedProject) {
+    return project.Id.toString() === selectedProject.toString();
+  }
+
+mixin project-selector(selectedProject, projects)
+  if projects
+    .form-group
+      label.sr-only(for="project") Project
+      select#project.form-control(name="project")
+        each project in projects
+          option(value=project.Id selected=isSelected(project, selectedProject))= getProjectLabel(project)

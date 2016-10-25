@@ -1,7 +1,7 @@
-mixin staff-selector(staff)
+mixin staff-selector(selectedStaff, staff)
   if staff
     .form-group
-      label(for="staff") Employee
-      select#staff.form-control
+      label.sr-only(for="staff") Employee
+      select#staff.form-control(name="staff")
         each person in staff
-          option(value=person.StaffSID)= person.FName + ' ' + person.SName
+          option(value=person.StaffSID selected=person.StaffSID.toString() === selectedStaff.toString())= person.FName + ' ' + person.SName

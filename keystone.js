@@ -1,15 +1,48 @@
-// Simulate config options from your production environment by
-// customising the .env file in your project's root folder.
 require('dotenv').config();
 
-const BigTime = require('bigtime-sdk'),
+const keystone = require('keystone'),
+      BigTime = require('bigtime-sdk'),
       bigTime = new BigTime({
         username: process.env.BIGTIME_USERNAME,
         password: process.env.BIGTIME_PASSWORD
-      });
-
-// Require keystone
-var keystone = require('keystone');
+      }),
+      timeRanges = [
+        {
+          key: '1 week',
+          value: '1w',
+          disabled: false
+        },
+        {
+          key: '1 month',
+          value: '1M',
+          disabled: false
+        },
+        {
+          key: '3 months',
+          value: '3M',
+          disabled: false
+        },
+        {
+          key: '6 months',
+          value: '6M',
+          disabled: false
+        },
+        {
+          key: '1 year',
+          value: '1y',
+          disabled: false
+        },
+        {
+          key: 'Max',
+          value: 'max',
+          disabled: false
+        },
+        {
+          key: 'Custom',
+          value: 'custom',
+          disabled: true
+        }
+      ];
 
 // Initialise Keystone with your project's configuration.
 // See http://keystonejs.com/guide/config for available options
@@ -18,18 +51,15 @@ var keystone = require('keystone');
 keystone.init({
 	'name': 'BigTime Viz',
 	'brand': 'Verys',
-
 	'sass': 'public',
 	'static': 'public',
 	'favicon': 'public/favicon.ico',
 	'views': 'templates/views',
 	'view engine': 'pug',
-  'view cache': false,
-
 	'auto update': true,
 	'session': true,
 	'auth': true,
-	'user model': 'User',
+	'user model': 'User'
 });
 
 // Load your project's Models
@@ -42,7 +72,8 @@ keystone.set('locals', {
 	_: require('lodash'),
 	env: keystone.get('env'),
 	utils: keystone.utils,
-	editable: keystone.content.editable,
+	editable: keystone.content.editable
+  // timeRanges
 });
 
 // Load your project's Routes
@@ -52,6 +83,12 @@ keystone.set('routes', require('./routes'));
 keystone.set('nav', {
 	users: 'users',
 });
+
+keystone.set('namespace', 'bigTimeViz');
+
+keystone.set('timeRanges', timeRanges);
+  
+keystone.set('defaultTimeRange', timeRanges.find(timeRange => timeRange.value === '1M'));
 
 /**
  * It probably isn't the best to create a BigTime session when the Keystone

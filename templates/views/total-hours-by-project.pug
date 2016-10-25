@@ -1,9 +1,10 @@
 extends ../layouts/default
 
 block content
-  h1 Total Hours Company-wide
+  h1 Total Hours By Project
   p.lead Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
   form.form-inline
+    +project-selector(selectedProject, projects)
     +time-range-selector(selectedTimeRange, timeRanges)
     button.btn.btn-default(type="submit") Apply
   .row

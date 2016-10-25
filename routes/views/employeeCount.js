@@ -5,14 +5,14 @@ const keystone = require('keystone'),
 
 exports = module.exports = function (req, res) {
 
-  const d3n = new d3Node({
+  const locals = res.locals,
+        d3n = new d3Node({
           d3Module: d3
         }),
         view = new keystone.View(req, res),
-        locals = res.locals,
-        reportId = process.env.BIGTIME_TOTAL_HOURS_COMPANY_REPORT_ID,
-        timeRanges = keystone.get('timeRanges'),
-        selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
+        reportId = process.env.BIGTIME_TOTAL_HOURS_BY_PROJECT_REPORT_ID,
+        // timeRanges = keystone.get('timeRanges'),
+        // selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
         margin = {
           top: 20,
           right: 20,
@@ -28,49 +28,31 @@ exports = module.exports = function (req, res) {
               .range([height, 0]),
         line = d3.line()
                  .x(d => x(d.date))
-                 .y(d => y(d.hours)),
+                 .y(d => y(d.count)),
         svg = d3n.createSVG()
                  .attr('width', width + margin.left + margin.right)
                  .attr('height', height + margin.top + margin.bottom)
                  .append('g')
                  .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-  locals.timeRanges = timeRanges;
-  locals.selectedTimeRange = selectedTimeRange;
-  
-  const body = {
-    DT_END: moment().format('YYYY-MM-DD')
-  }
+  // locals.timeRanges = timeRanges;
+  // locals.selectedTimeRange = selectedTimeRange;
 
-  if (selectedTimeRange.toLowerCase() === 'max') {
-    body.DT_BEGIN = process.env.BIGTIME_TIME_RANGE_MAX_DATE;
-  } else {
-    const duration = selectedTimeRange.split('');
-    body.DT_BEGIN = moment().subtract(Number(duration[0]), duration[1]).format('YYYY-MM-DD');
-  }
+  // res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
 
-  locals.bigTime.updateReportById(reportId, body)
-    .then(
-      () => {
-        return locals.bigTime.getReportById(reportId)
-      }
-    )
+  locals.bigTime.getStaffList()
     .then(
       response => {
-        let dateIndex = null,
-            hoursIndex = null;
-        response.body.FieldList.forEach((field, index) => {
-          if (field.FieldNm === 'tmdt') dateIndex = index;
-          if (field.FieldNm === 'tmhrsin') hoursIndex = index;
-        });
-        let data = response.body.Data.filter(item => item[hoursIndex] >= 100)
-                                       .map(item => ({date: item[dateIndex], hours: item[hoursIndex]}));
+        let data = response.body.map(item => ({date: item.Start_dt}))
+                                .filter(item => !!item.date)
+                                .sort((previous, current) => new Date(previous.date) - new Date(current.date));
+        data.forEach((item, index) => item.count = index);
         data.forEach(d => {
           d.date = formatDate(d.date);
-          d.hours = Number(d.hours);
+          d.count = Number(d.count);
         });
         x.domain(d3.extent(data, d => d.date));
-        y.domain([0, d3.max(data, d => d.hours)]);
+        y.domain([0, d3.max(data, d => d.count)]);
 
         svg.append('path')
            .data([data])
@@ -95,16 +77,16 @@ exports = module.exports = function (req, res) {
            .attr('x', 0 - (height / 2))
            .attr('dy', '1em')
            .style('text-anchor', 'middle')
-           .text('Hours'); 
+           .text('Employees');
 
         locals.svg = d3n.svgString();
-        view.render('total-hours-company');
+        view.render('employee-count');
       }
     )
     .catch(
       err => {
         console.log('Error generating report.', err);
-        res.redirect('index');
+        res.redirect('/');
       }
     )
 

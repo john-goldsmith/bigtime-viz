@@ -1,11 +1,15 @@
 extends ../layouts/default
 
 block content
-  .row
-    .col-sm-6
-      +staff-selector(staff)
-    .col-sm-6
-      +time-range-selector()
+  h1 Percentage of time per project
+  p.lead Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+  form.form-inline
+    +staff-selector(selectedStaff, staff)
+    +time-range-selector(selectedTimeRange, timeRanges)
+    button.btn.btn-default(type="submit") Apply
+  div Total: #{total} hours
+  each percentage in percentages
+    div #{percentage.project}: #{percentage.percentage}%
   .row
     .col-xs-12
       != svg

@@ -36,13 +36,13 @@ var routes = {
 exports = module.exports = function (app) {
 	// Views
   app.get('/', routes.views.index);
-  app.get('/gantt', routes.views.ganttRedirect);
-  app.get('/gantt/:id', routes.views.gantt);
-  app.get('/percentage', routes.views.percentageRedirect);
-  app.get('/percentage/:id', routes.views.percentage);
+  app.get('/gantt', routes.views.gantt);
+  app.get('/percentage', routes.views.percentage);
   app.get('/total-hours-company', routes.views.totalHoursCompany);
-  app.get('/total-hours-project', routes.views.totalHoursProject);
-  app.get('/total-hours-people', routes.views.totalHoursPeople);
+  app.get('/total-hours-all-projects', routes.views.totalHoursAllProjects);
+  app.get('/total-hours-all-people', routes.views.totalHoursAllPeople);
+  app.get('/total-hours-by-project', routes.views.totalHoursByProject);
+  app.get('/employee-count', routes.views.employeeCount);
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
