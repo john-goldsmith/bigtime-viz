@@ -1,11 +1,12 @@
 extends ../layouts/default
 
 block content
-  h1 Total Hours By Project
-  p.lead Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+  h1 Total hours per project over time
+  p.lead A line graph showing the total hours logged per project over time. This helps visualize activity and inactivity of specific projects.
   form.form-inline
     +project-selector(selectedProject, projects)
     +time-range-selector(selectedTimeRange, timeRanges)
+    +include-weekends(includeWeekends)
     button.btn.btn-default(type="submit") Apply
   .row
     .col-xs-12

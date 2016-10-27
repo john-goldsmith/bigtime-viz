@@ -17,29 +17,29 @@ block content
       div(class="panel panel-default")
         div(class="panel-heading")
           a(href="/employee-count")
-            h3(class="panel-title") Employee count
+            h3(class="panel-title") Employee count over time
         div(class="panel-body")
           a(href="/employee-count")
-            img(src="/images/chart.png").img-responsive
-          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+            img(src="/images/employee-count.png").img-responsive
+          | A line graph that shows the total number of employees over time. This helps visualize hiring trends.
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
-          a(href="/percentage")
-            h3(class="panel-title") % of time per project
+          a(href="/total-hours-by-project")
+            h3(class="panel-title") Total hours per project over time
         div(class="panel-body")
-          a(href="/percentage")
-            img(src="/images/chart.png").img-responsive
-          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+          a(href="/total-hours-by-project")
+            img(src="/images/total-hours-by-project.png").img-responsive
+          | A line graph showing the total hours logged per project over time. This helps visualize activity and inactivity of specific projects.
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
           a(href="/total-hours-company")
-            h3(class="panel-title") Total hours company-wide
+            h3(class="panel-title") Total hours company-wide over time
         div(class="panel-body")
           a(href="/total-hours-company")
-            img(src="/images/chart.png").img-responsive
-          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+            img(src="/images/total-hours-company.png").img-responsive
+          | A line graph that shows the total number of hours logged across all employees. This helps predict future invoice hours.
   div(class="row")
     div(class="col-sm-4")
       div(class="panel panel-default")
@@ -48,8 +48,8 @@ block content
             h3(class="panel-title") Total hours for all projects
         div(class="panel-body")
           a(href="/total-hours-all-projects")
-            img(src="/images/chart.png").img-responsive
-          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+            img(src="/images/total-hours-all-projects.png").img-responsive
+          | A bar chart showing the total number of hours logged for each project. This helps identify top revenue-earning projects.
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
@@ -57,17 +57,17 @@ block content
             h3(class="panel-title") Total hours for all people
         div(class="panel-body")
           a(href="/total-hours-all-people")
-            img(src="/images/chart.png").img-responsive
-          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+            img(src="/images/total-hours-all-people.png").img-responsive
+          | A bar chart showing the total number of hours logged for each employee. This helps identify top-revenue earning individuals.
     div(class="col-sm-4")
       div(class="panel panel-default")
         div(class="panel-heading")
-          a(href="/total-hours-by-project")
-            h3(class="panel-title") Total hours by project
+          a(href="/percentage")
+            h3(class="panel-title") Total hours per employee per project
         div(class="panel-body")
-          a(href="/total-hours-by-project")
-            img(src="/images/chart.png").img-responsive
-          | Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+          a(href="/percentage")
+            img(src="/images/percentage.png").img-responsive
+          | A bar chart that shows how much time individual employees spend on specific projects. This helps identify if employees are effectively utilized.
   //- div(class="input-group input-daterange")
   //-   input(type="text" class="form-control" value="2012-04-05")
   //-   span(class="input-group-addon") to

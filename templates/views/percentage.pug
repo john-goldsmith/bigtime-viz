@@ -1,18 +1,20 @@
 extends ../layouts/default
 
 block content
-  h1 Percentage of time per project
-  p.lead Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+  h1 Total hours per employee per project
+  p.lead A bar chart that shows how much time individual employees spend on specific projects. This helps identify if employees are effectively utilized.
   form.form-inline
     +staff-selector(selectedStaff, staff)
     +time-range-selector(selectedTimeRange, timeRanges)
     button.btn.btn-default(type="submit") Apply
-  div Total: #{total} hours
-  each percentage in percentages
-    div #{percentage.project}: #{percentage.percentage}%
+    strong Total: #{total} hours
+  //- each percentage in percentages
+  //-   div #{percentage.project}: #{percentage.percentage}%
   .row
-    .col-xs-12
+    .col-xs-6
       != svg
+    .col-xs-6
+      != svg2
   //- div(class="input-group input-daterange")
   //-   input(type="text" class="form-control" value="2012-04-05")
   //-   span(class="input-group-addon") to

@@ -1,10 +1,11 @@
 extends ../layouts/default
 
 block content
-  h1 Total Hours Company-wide
-  p.lead Track the total work remaining and project the likelihood of achieving the sprint goal. This helps your team manage its progress and respond accordingly.
+  h1 Total hours company-wide over time
+  p.lead A line graph that shows the total number of hours logged across all employees. This helps predict future invoice hours.
   form.form-inline
     +time-range-selector(selectedTimeRange, timeRanges)
+    +include-weekends(includeWeekends)
     button.btn.btn-default(type="submit") Apply
   .row
     .col-xs-12

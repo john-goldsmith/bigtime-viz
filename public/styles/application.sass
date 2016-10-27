@@ -7,16 +7,47 @@ $font-size-base: 14px
 @import "site/layout"
 @import "site/dashboard"
 
-.line
-  fill: none
-  stroke: steelblue
-  stroke-width: 2px
-  
-.bar
-  fill: steelblue
+a
+  color: #5cb200
   
   &:hover
-    fill: tomato
+    color: #81bd41
+    
+.panel-heading
+
+  a
+    color: black
+    
+    &:hover
+      color: black
+
+.line
+  fill: none
+  stroke: black
+  stroke-width: 2px
+  
+.dot
+  fill: black
+  
+  &:hover
+    fill: #5cb200
+    
+.grid
+
+  line
+    stroke: lightgrey;
+    stroke-opacity: 0.7;
+    shape-rendering: crispEdges;
+  
+.bar
+  fill: black
+  
+  &:hover
+    fill: #5cb200
+    
+.overlay
+  fill: none
+  pointer-events: all
     
 .panel
 
@@ -28,3 +59,16 @@ $font-size-base: 14px
 svg
   display: block
   margin: 0 auto
+
+.navbar-inverse
+
+  .navbar-brand
+    color: white
+    padding: 10px
+    display: flex
+    align-items: center
+
+    img
+      height: 100%
+      width: auto
+      margin-right: 10px

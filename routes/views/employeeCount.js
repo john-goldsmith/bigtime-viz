@@ -11,8 +11,6 @@ exports = module.exports = function (req, res) {
         }),
         view = new keystone.View(req, res),
         reportId = process.env.BIGTIME_TOTAL_HOURS_BY_PROJECT_REPORT_ID,
-        // timeRanges = keystone.get('timeRanges'),
-        // selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
         margin = {
           top: 20,
           right: 20,
@@ -34,16 +32,12 @@ exports = module.exports = function (req, res) {
                  .attr('height', height + margin.top + margin.bottom)
                  .append('g')
                  .attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-  // locals.timeRanges = timeRanges;
-  // locals.selectedTimeRange = selectedTimeRange;
-
-  // res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
+                     
 
   locals.bigTime.getStaffList()
     .then(
       response => {
-        let data = response.body.map(item => ({date: item.Start_dt}))
+        let data = response.body.map(item => ({date: item.Start_dt, name: `${item.FName} ${item.SName}`}))
                                 .filter(item => !!item.date)
                                 .sort((previous, current) => new Date(previous.date) - new Date(current.date));
         data.forEach((item, index) => item.count = index);
@@ -54,17 +48,43 @@ exports = module.exports = function (req, res) {
         x.domain(d3.extent(data, d => d.date));
         y.domain([0, d3.max(data, d => d.count)]);
 
+        svg.append('g')
+           .attr('class', 'grid')
+           .attr('transform', `translate(0,${height})`)
+           .call(d3.axisBottom(x).ticks(5).tickSize(-height).tickFormat(''));
+
+        svg.append('g')
+           .attr('class', 'grid')
+           .call(d3.axisLeft(y).ticks(10).tickSize(-width).tickFormat(''));
+
         svg.append('path')
            .data([data])
            .attr('class', 'line')
            .attr('d', line);
 
+        svg.selectAll('dot')
+           .data(data)
+           .enter()
+           .append('circle')
+           .attr('class', 'dot')
+           .attr('r', 3)
+           .attr('cx', d => x(d.date))
+           .attr('cy', d => y(d.count))
+           .attr('data-toggle', 'popover')
+           .attr('title', 'Title')
+           .attr('data-content', 'This is some content')
+           .attr('data-name', d => d.name)
+           .attr('data-count', d => d.count)
+           .attr('data-date', d => d.date)
+           .append('title')
+           .text(d => `Employee #${d.count}: ${d.name}\n${moment(d.date).format('YYYY-MM-DD')}`);
+           
         svg.append('g')
-            .attr('transform', `translate(0, ${height})`)
-            .call(d3.axisBottom(x));
+           .attr('transform', `translate(0, ${height})`)
+           .call(d3.axisBottom(x));
 
         svg.append('g')
-            .call(d3.axisLeft(y));
+           .call(d3.axisLeft(y));
 
         svg.append('text')
            .attr('transform', `translate(${width / 2}, ${height + margin.top + 10})`)
@@ -86,6 +106,7 @@ exports = module.exports = function (req, res) {
     .catch(
       err => {
         console.log('Error generating report.', err);
+        req.flash('error', 'Error generating report');
         res.redirect('/');
       }
     )

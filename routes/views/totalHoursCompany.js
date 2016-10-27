@@ -13,6 +13,7 @@ exports = module.exports = function (req, res) {
         reportId = process.env.BIGTIME_TOTAL_HOURS_COMPANY_REPORT_ID,
         timeRanges = keystone.get('timeRanges'),
         selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
+        includeWeekends = req.query['include-weekends'] || false,
         margin = {
           top: 20,
           right: 20,
@@ -37,6 +38,7 @@ exports = module.exports = function (req, res) {
 
   locals.timeRanges = timeRanges;
   locals.selectedTimeRange = selectedTimeRange;
+  locals.includeWeekends = includeWeekends;
   
   const body = {
     DT_END: moment().format('YYYY-MM-DD')
@@ -63,14 +65,32 @@ exports = module.exports = function (req, res) {
           if (field.FieldNm === 'tmdt') dateIndex = index;
           if (field.FieldNm === 'tmhrsin') hoursIndex = index;
         });
-        let data = response.body.Data.filter(item => item[hoursIndex] >= 100)
-                                       .map(item => ({date: item[dateIndex], hours: item[hoursIndex]}));
+
+        let data = null;
+        if (!!includeWeekends) {
+          data = response.body.Data.map(item => ({date: item[dateIndex], hours: item[hoursIndex]}));
+        } else {
+          data = response.body.Data.filter(item => {
+            let day = moment(item[dateIndex]).format('ddd').toLowerCase();
+            return (day !== 'sat' && day !== 'sun');
+          }).map(item => ({date: item[dateIndex], hours: item[hoursIndex]}));
+        }
+        
         data.forEach(d => {
           d.date = formatDate(d.date);
           d.hours = Number(d.hours);
         });
         x.domain(d3.extent(data, d => d.date));
         y.domain([0, d3.max(data, d => d.hours)]);
+
+        svg.append('g')
+           .attr('class', 'grid')
+           .attr('transform', `translate(0,${height})`)
+           .call(d3.axisBottom(x).ticks(5).tickSize(-height).tickFormat(''));
+
+        svg.append('g')
+           .attr('class', 'grid')
+           .call(d3.axisLeft(y).ticks(10).tickSize(-width).tickFormat(''));
 
         svg.append('path')
            .data([data])
@@ -104,6 +124,7 @@ exports = module.exports = function (req, res) {
     .catch(
       err => {
         console.log('Error generating report.', err);
+        req.flash('error', 'Error generating report');
         res.redirect('index');
       }
     )

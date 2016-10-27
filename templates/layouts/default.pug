@@ -2,6 +2,7 @@ include ../mixins/flash-messages
 include ../mixins/staff-selector
 include ../mixins/time-range-selector
 include ../mixins/project-selector
+include ../mixins/include-weekends
 
 doctype html
 html(lang="en")
@@ -31,6 +32,8 @@ html(lang="en")
         //-   include ../partials/sidebar.pug
         //- .col-sm-offset-3.col-md-10.col-md-offset-2
         .col-sm-12.main
+          +flash-messages(messages)
+          //- div#tooltip.tooltip
           block content
     script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.slim.min.js')
     script(src='/js/application.js')

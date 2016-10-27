@@ -73,6 +73,10 @@ exports = module.exports = function (req, res) {
         x.domain(data.map(d => d.person));
         y.domain([0, d3.max(data, d => d.hours)]);
 
+        svg.append('g')
+           .attr('class', 'grid')
+           .call(d3.axisLeft(y).ticks(10).tickSize(-width).tickFormat(''));
+
         svg.selectAll('.bar')
            .data(data)
            .enter()
@@ -111,6 +115,7 @@ exports = module.exports = function (req, res) {
     .catch(
       err => {
         console.log('Error generating report.', err);
+        req.flash('error', 'Error generating report');
         res.redirect('/');
       }
     );
