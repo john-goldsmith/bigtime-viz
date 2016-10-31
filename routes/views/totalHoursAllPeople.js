@@ -1,7 +1,8 @@
 const keystone = require('keystone'),
       moment = require('moment'),
       d3Node = require('d3-node'),
-      d3 = require('d3');
+      d3 = require('d3'),
+      utils = require('../../utils');
 
 exports = module.exports = function (req, res) {
 
@@ -12,7 +13,7 @@ exports = module.exports = function (req, res) {
         locals = res.locals,
         reportId = process.env.BIGTIME_TOTAL_HOURS_ALL_PEOPLE_REPORT_ID,
         timeRanges = keystone.get('timeRanges'),
-        selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
+        selectedTimeRange = utils.getSelectedTimeRange(req),
         margin = {
           top: 20,
           right: 20,
@@ -34,6 +35,7 @@ exports = module.exports = function (req, res) {
 
   locals.timeRanges = timeRanges;
   locals.selectedTimeRange = selectedTimeRange;
+  
   res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
 
   const body = {
@@ -85,7 +87,9 @@ exports = module.exports = function (req, res) {
            .attr('x', d => x(d.person))
            .attr('width', x.bandwidth())
            .attr('y', d => y(d.hours))
-           .attr('height', d => height - y(d.hours));
+           .attr('height', d => height - y(d.hours))
+           .append('title')
+           .text(d => `${d.person}\n${d.hours} hours`);
 
         svg.append('g')
            .attr('transform', `translate(0, ${height})`)

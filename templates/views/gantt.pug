@@ -1,11 +1,12 @@
 extends ../layouts/default
 
 block content
-  .row
-    .col-sm-6
-      +staff-selector(staff)
-    .col-sm-6
-      +time-range-selector()
+  h1 Gantt
+  p.lead Some description...
+  form.form-inline
+    +staff-selector(selectedStaff, staff)
+    +time-range-selector(selectedTimeRange, timeRanges)
+    button.btn.btn-default(type="submit") Apply
   .row
     .col-xs-12
       != svg

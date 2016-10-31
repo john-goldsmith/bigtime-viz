@@ -1,7 +1,8 @@
 const keystone = require('keystone'),
       d3Node = require('d3-node'),
       d3 = require('d3'),
-      moment = require('moment');
+      moment = require('moment'),
+      utils = require('../../utils');
 
 exports = module.exports = function (req, res) {
 
@@ -31,8 +32,8 @@ exports = module.exports = function (req, res) {
         }),
         reportId = process.env.BIGTIME_PERCENTAGE_REPORT_ID,
         timeRanges = keystone.get('timeRanges'),
-        selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
-        selectedStaff = req.query.staff,
+        selectedTimeRange = utils.getSelectedTimeRange(req),
+        selectedStaff = utils.getSelectedStaff(req),
         // donutWidth = 75,
         // legendRectSize = 18,
         // legendSpacing = 4,
@@ -133,7 +134,9 @@ exports = module.exports = function (req, res) {
          .attr('x', d => x(d.project))
          .attr('width', x.bandwidth())
          .attr('y', d => y(d.hours))
-         .attr('height', d => height - y(d.hours));
+         .attr('height', d => height - y(d.hours))
+         .append('title')
+         .text(d => `${d.project}\n${d.hours} hours\n${d.percentage}%`);
 
       svg.append('g')
          .attr('transform', `translate(0, ${height})`)

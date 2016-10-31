@@ -1,17 +1,21 @@
 const keystone = require('keystone'),
       moment = require('moment'),
       d3Node = require('d3-node'),
-      d3 = require('d3');
+      d3 = require('d3'),
+      utils = require('../../utils');
 
 exports = module.exports = function (req, res) {
 
   const locals = res.locals;
 
   if (!req.query.project) {
+    if (req.cookies['bigTimeViz.lastSelectedProject']) {
+      res.redirect(`?project=${req.cookies['bigTimeViz.lastSelectedProject']}`);
+      return;
+    }
     locals.bigTime.projectsPicklist()
       .then(
         response => {
-          // req.cookies
           res.redirect(`?project=${response.body[0].Id}`);
         },
         err => {
@@ -29,9 +33,9 @@ exports = module.exports = function (req, res) {
         view = new keystone.View(req, res),
         reportId = process.env.BIGTIME_TOTAL_HOURS_BY_PROJECT_REPORT_ID,
         timeRanges = keystone.get('timeRanges'),
-        selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
-        selectedProject = req.query.project,
-        includeWeekends = req.query['include-weekends'] || false,
+        selectedTimeRange = utils.getSelectedTimeRange(req),
+        selectedProject = utils.getSelectedProject(req),
+        includeWeekends = utils.includeWeekends(req),
         margin = {
           top: 20,
           right: 20,
@@ -61,6 +65,7 @@ exports = module.exports = function (req, res) {
 
   res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
   res.cookie(`${keystone.get('namespace')}.lastSelectedProject`, selectedProject);
+  res.cookie(`${keystone.get('namespace')}.includeWeekends`, includeWeekends);
 
   const body = {
     DT_END: moment().format('YYYY-MM-DD'),
@@ -127,6 +132,17 @@ exports = module.exports = function (req, res) {
            .data([data])
            .attr('class', 'line')
            .attr('d', line);
+
+        svg.selectAll('dot')
+           .data(data)
+           .enter()
+           .append('circle')
+           .attr('class', 'dot')
+           .attr('r', 3)
+           .attr('cx', d => x(d.date))
+           .attr('cy', d => y(d.hours))
+           .append('title')
+           .text(d => `${moment(d.date).format('dddd, MMMM Do YYYY')}\n${d.hours} hours`);
 
         svg.append('g')
             .attr('transform', `translate(0, ${height})`)

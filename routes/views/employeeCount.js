@@ -70,14 +70,14 @@ exports = module.exports = function (req, res) {
            .attr('r', 3)
            .attr('cx', d => x(d.date))
            .attr('cy', d => y(d.count))
-           .attr('data-toggle', 'popover')
-           .attr('title', 'Title')
-           .attr('data-content', 'This is some content')
-           .attr('data-name', d => d.name)
-           .attr('data-count', d => d.count)
-           .attr('data-date', d => d.date)
+           // .attr('data-toggle', 'popover')
+           // .attr('title', 'Title')
+           // .attr('data-content', 'This is some content')
+           // .attr('data-name', d => d.name)
+           // .attr('data-count', d => d.count)
+           // .attr('data-date', d => d.date)
            .append('title')
-           .text(d => `Employee #${d.count}: ${d.name}\n${moment(d.date).format('YYYY-MM-DD')}`);
+           .text(d => `Employee #${d.count}: ${d.name}\n${moment(d.date).format('dddd, MMMM Do YYYY')}`);
            
         svg.append('g')
            .attr('transform', `translate(0, ${height})`)

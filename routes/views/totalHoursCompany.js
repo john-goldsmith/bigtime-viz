@@ -1,7 +1,8 @@
 const keystone = require('keystone'),
       moment = require('moment'),
       d3Node = require('d3-node'),
-      d3 = require('d3');
+      d3 = require('d3'),
+      utils = require('../../utils');
 
 exports = module.exports = function (req, res) {
 
@@ -12,8 +13,8 @@ exports = module.exports = function (req, res) {
         locals = res.locals,
         reportId = process.env.BIGTIME_TOTAL_HOURS_COMPANY_REPORT_ID,
         timeRanges = keystone.get('timeRanges'),
-        selectedTimeRange = timeRanges.map(timeRange => timeRange.value).includes(req.query['time-range']) ? req.query['time-range'] : keystone.get('defaultTimeRange').value,
-        includeWeekends = req.query['include-weekends'] || false,
+        selectedTimeRange = utils.getSelectedTimeRange(req),
+        includeWeekends = utils.includeWeekends(req),
         margin = {
           top: 20,
           right: 20,
@@ -39,6 +40,9 @@ exports = module.exports = function (req, res) {
   locals.timeRanges = timeRanges;
   locals.selectedTimeRange = selectedTimeRange;
   locals.includeWeekends = includeWeekends;
+
+  res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
+  res.cookie(`${keystone.get('namespace')}.includeWeekends`, includeWeekends);
   
   const body = {
     DT_END: moment().format('YYYY-MM-DD')
@@ -96,6 +100,17 @@ exports = module.exports = function (req, res) {
            .data([data])
            .attr('class', 'line')
            .attr('d', line);
+
+        svg.selectAll('dot')
+           .data(data)
+           .enter()
+           .append('circle')
+           .attr('class', 'dot')
+           .attr('r', 3)
+           .attr('cx', d => x(d.date))
+           .attr('cy', d => y(d.hours))
+           .append('title')
+           .text(d => `${moment(d.date).format('dddd, MMMM Do YYYY')}\n${d.hours} hours`);
 
         svg.append('g')
             .attr('transform', `translate(0, ${height})`)
