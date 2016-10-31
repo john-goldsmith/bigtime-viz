@@ -6,9 +6,8 @@
 
 ## To Do
 * Custom date ranges
-* Read options from cookies
 
 ## Ideas
-* Person [Gantt chart](http://layer0.authentise.com/gantt-chart-with-reactjs-and-d3js.html):
+* Person Gantt chart
   * Y-axis: projects
   * X-axis: time
