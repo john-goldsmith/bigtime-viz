@@ -1,4 +1,4 @@
-const keystone = require('keystone');
+const namespace = require('../config/namespace')
 
 /**
  * [hasValidStaffCookie description]
@@ -33,7 +33,7 @@ function hasWeekendQueryParam(req) {
  * @return {Boolean}     [description]
  */
 function hasWeekendCookie(req) {
-  const namespace = keystone.get('namespace');
+  // const namespace = namespace;
   return req.cookies && req.cookies[`${namespace}.includeWeekends`];
 }
 
@@ -52,7 +52,7 @@ function getWeekendQueryParam(req) {
  * @return {[type]}     [description]
  */
 function getWeekendCookie(req) {
-  const namespace = keystone.get('namespace');
+  // const namespace = namespace;
   return req.cookies[`${namespace}.includeWeekends`]; // || ...
 }
 

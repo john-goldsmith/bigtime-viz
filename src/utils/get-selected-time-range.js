@@ -1,4 +1,6 @@
-const keystone = require('keystone');
+// const app = require('../config/express')
+const { timeRanges, defaultTimeRange } = require('../config/time-ranges')
+const namespace = require('../config/namespace')
 
 /**
  * [isValidTimeRange description]
@@ -6,7 +8,6 @@ const keystone = require('keystone');
  * @return {Boolean}       [description]
  */
 function isValidTimeRange(value) {
-  const timeRanges = keystone.get('timeRanges');
   return timeRanges.map(timeRange => timeRange.value).includes(value);
 }
 
@@ -33,7 +34,7 @@ function hasValidTimeRangeQueryParam(req) {
  * @return {[type]} [description]
  */
 function getDefaultTimeRange() {
-  return keystone.get('defaultTimeRange').value || '1M';
+  return defaultTimeRange.value
 }
 
 /**
@@ -51,7 +52,7 @@ function hasTimeRangeQueryParam(req) {
  * @return {Boolean}     [description]
  */
 function hasTimeRangeCookie(req) {
-  const namespace = keystone.get('namespace');
+  // const namespace = namespace;
   return req.cookies && req.cookies[`${namespace}.lastSelectedTimeRange`];
 }
 
@@ -70,7 +71,7 @@ function getTimeRangeQueryParam(req) {
  * @return {[type]}     [description]
  */
 function getTimeRangeCookie(req) {
-  const namespace = keystone.get('namespace');
+  // const namespace = namespace;
   return req.cookies[`${namespace}.lastSelectedTimeRange`]; // || ...
 }
 

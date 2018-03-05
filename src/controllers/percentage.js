@@ -1,37 +1,37 @@
-const keystone = require('keystone'),
-      d3Node = require('d3-node'),
+const d3Node = require('d3-node'),
       d3 = require('d3'),
       moment = require('moment'),
-      utils = require('../../utils');
+      utils = require('../utils'),
+      namespace = require('../config/namespace'),
+      timeRanges = require('../config/time-ranges'),
+      bigTime = require('../config/bigtime')
 
-exports = module.exports = function (req, res) {
+function index(req, res, next) {
 
   const locals = res.locals;
 
   if (!req.query.staff) {
-    locals.bigTime.getStaffList() // TODO: staffPicklist()
+    bigTime.getStaffList() // TODO: staffPicklist()
       .then(
         response => {
           res.redirect(`?staff=${response.body[0].StaffSID}`);
         },
         err => {
           console.log('Error generating report.', err);
-          req.flash('error', 'Error generating report');
+          // req.flash('error', 'Error generating report');
           res.redirect('/');
         }
       );
     return;
   }
 
-  const view = new keystone.View(req, res),
-        d3n = new d3Node({
+  const d3n = new d3Node({
           d3Module: d3
         }),
         d3n2 = new d3Node({
           d3Module: d3
         }),
         reportId = process.env.BIGTIME_PERCENTAGE_REPORT_ID,
-        timeRanges = keystone.get('timeRanges'),
         selectedTimeRange = utils.getSelectedTimeRange(req),
         selectedStaff = utils.getSelectedStaff(req),
         // donutWidth = 75,
@@ -70,8 +70,8 @@ exports = module.exports = function (req, res) {
   locals.timeRanges = timeRanges;
   locals.selectedTimeRange = selectedTimeRange;
   locals.selectedStaff = selectedStaff;
-  res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
-  res.cookie(`${keystone.get('namespace')}.lastSelectedStaff`, selectedStaff);
+  res.cookie(`${namespace}.lastSelectedTimeRange`, selectedTimeRange);
+  res.cookie(`${namespace}.lastSelectedStaff`, selectedStaff);
 
   const body = {
     DT_END: moment().format('YYYY-MM-DD'),
@@ -87,15 +87,15 @@ exports = module.exports = function (req, res) {
 
   Promise.all(
     [
-      locals.bigTime.updateReportById(reportId, body),
-      locals.bigTime.getStaffList()
+      bigTime.updateReportById(reportId, body),
+      bigTime.getStaffList()
     ]
   )
   .then(
     responses => {
       const staff = responses[1].body;
       locals.staff = staff;
-      return locals.bigTime.getReportById(reportId)
+      return bigTime.getReportById(reportId)
     }
   )
   .then(
@@ -197,15 +197,19 @@ exports = module.exports = function (req, res) {
 
       locals.svg = d3n.svgString();
       locals.svg2 = d3n2.svgString();
-      view.render('percentage');
+      res.render('pages/percentage', locals);
     }
   )
   .catch(
     err => {
       console.log('Error generating report.', err);
-      req.flash('error', 'Error generating report');
+      // req.flash('error', 'Error generating report');
       res.redirect('/');
     }
   );
 
 };
+
+module.exports = {
+  index
+}

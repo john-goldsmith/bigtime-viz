@@ -1,9 +1,9 @@
-const keystone = require('keystone'),
-      moment = require('moment'),
+const moment = require('moment'),
       d3Node = require('d3-node'),
-      d3 = require('d3');
+      d3 = require('d3'),
+      app = require('../config/express')
 
-exports = module.exports = function (req, res) {
+function index(req, res, next) {
 
   const locals = res.locals;
 
@@ -15,7 +15,7 @@ exports = module.exports = function (req, res) {
         },
         err => {
           console.log('Error generating report.', err);
-          req.flash('error', 'Error generating report');
+          // req.flash('error', 'Error generating report');
           res.redirect('/');
         }
       );
@@ -53,8 +53,8 @@ exports = module.exports = function (req, res) {
   locals.selectedTimeRange = selectedTimeRange;
   locals.selectedStaff = selectedStaff;
 
-  res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
-  res.cookie(`${keystone.get('namespace')}.lastSelectedStaff`, selectedStaff);
+  res.cookie(`${namespace}.lastSelectedTimeRange`, selectedTimeRange);
+  res.cookie(`${namespace}.lastSelectedStaff`, selectedStaff);
 
   const body = {
     DT_END: moment().format('YYYY-MM-DD')
@@ -143,9 +143,13 @@ exports = module.exports = function (req, res) {
   .catch(
     err => {
       console.log('Error generating report.', err);
-      req.flash('error', 'Error generating report');
+      // req.flash('error', 'Error generating report');
       res.redirect('/');
     }
   )
 
 };
+
+module.exports = {
+  index
+}

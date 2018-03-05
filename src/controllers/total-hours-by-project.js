@@ -1,26 +1,29 @@
-const keystone = require('keystone'),
-      moment = require('moment'),
+const moment = require('moment'),
       d3Node = require('d3-node'),
       d3 = require('d3'),
-      utils = require('../../utils');
+      utils = require('../utils'),
+      bigTime = require('../config/bigtime'),
+      app = require('../config/express'),
+      namespace = require('../config/namespace'),
+      timeRanges = require('../config/time-ranges')
 
-exports = module.exports = function (req, res) {
+function index(req, res, next) {
 
   const locals = res.locals;
 
   if (!req.query.project) {
-    if (req.cookies['bigTimeViz.lastSelectedProject']) {
+    if (req.cookies && req.cookies['bigTimeViz.lastSelectedProject']) {
       res.redirect(`?project=${req.cookies['bigTimeViz.lastSelectedProject']}`);
       return;
     }
-    locals.bigTime.projectsPicklist()
+    bigTime.projectsPicklist()
       .then(
         response => {
           res.redirect(`?project=${response.body[0].Id}`);
         },
         err => {
           console.log('Error fetching projects picklist', err);
-          req.flash('error', 'Error generating report');
+          // req.flash('error', 'Error generating report');
           res.redirect('/');
         }
       );
@@ -30,9 +33,7 @@ exports = module.exports = function (req, res) {
   const d3n = new d3Node({
           d3Module: d3
         }),
-        view = new keystone.View(req, res),
         reportId = process.env.BIGTIME_TOTAL_HOURS_BY_PROJECT_REPORT_ID,
-        timeRanges = keystone.get('timeRanges'),
         selectedTimeRange = utils.getSelectedTimeRange(req),
         selectedProject = utils.getSelectedProject(req),
         includeWeekends = utils.includeWeekends(req),
@@ -63,9 +64,9 @@ exports = module.exports = function (req, res) {
   locals.selectedProject = selectedProject;
   locals.includeWeekends = includeWeekends;
 
-  res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
-  res.cookie(`${keystone.get('namespace')}.lastSelectedProject`, selectedProject);
-  res.cookie(`${keystone.get('namespace')}.includeWeekends`, includeWeekends);
+  res.cookie(`${namespace}.lastSelectedTimeRange`, selectedTimeRange);
+  res.cookie(`${namespace}.lastSelectedProject`, selectedProject);
+  res.cookie(`${namespace}.includeWeekends`, includeWeekends);
 
   const body = {
     DT_END: moment().format('YYYY-MM-DD'),
@@ -79,16 +80,16 @@ exports = module.exports = function (req, res) {
     body.DT_BEGIN = moment().subtract(Number(duration[0]), duration[1]).format('YYYY-MM-DD');
   }
 
-  locals.bigTime.projectsPicklist()
+  bigTime.projectsPicklist()
     .then(
       response => {
         locals.projects = response.body;
-        return locals.bigTime.updateReportById(reportId, body);
+        return bigTime.updateReportById(reportId, body);
       }
     )
     .then(
       () => {
-        return locals.bigTime.getReportById(reportId);
+        return bigTime.getReportById(reportId);
       }
     )
     .then(
@@ -100,7 +101,7 @@ exports = module.exports = function (req, res) {
           if (field.FieldNm === 'tmhrsin') hoursIndex = index;
         });
         if (!response.body.Data) {
-          view.render('total-hours-by-project');
+          res.render('pages/total-hours-by-project', locals);
           return;
         }
         let data = null;
@@ -165,15 +166,19 @@ exports = module.exports = function (req, res) {
            .text('Hours');
 
         locals.svg = d3n.svgString();
-        view.render('total-hours-by-project');
+        res.render('pages/total-hours-by-project', locals);
       }
     )
     .catch(
       err => {
         console.log('Error generating report.', err);
-        req.flash('error', 'Error generating report');
+        // req.flash('error', 'Error generating report');
         res.redirect('/');
       }
     )
 
 };
+
+module.exports = {
+  index
+}

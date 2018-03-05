@@ -1,15 +1,15 @@
-const keystone = require('keystone'),
-      moment = require('moment'),
+const moment = require('moment'),
       d3Node = require('d3-node'),
-      d3 = require('d3');
+      d3 = require('d3'),
+      bigTime = require('../config/bigtime')
 
-exports = module.exports = function (req, res) {
+function index(req, res, next) {
 
   const locals = res.locals,
         d3n = new d3Node({
           d3Module: d3
         }),
-        view = new keystone.View(req, res),
+        // view = new keystone.View(req, res),
         reportId = process.env.BIGTIME_TOTAL_HOURS_BY_PROJECT_REPORT_ID,
         margin = {
           top: 20,
@@ -32,9 +32,9 @@ exports = module.exports = function (req, res) {
                  .attr('height', height + margin.top + margin.bottom)
                  .append('g')
                  .attr('transform', `translate(${margin.left}, ${margin.top})`);
-                     
 
-  locals.bigTime.getStaffList()
+
+  bigTime.getStaffList()
     .then(
       response => {
         let data = response.body.map(item => ({date: item.Start_dt, name: `${item.FName} ${item.SName}`}))
@@ -78,7 +78,7 @@ exports = module.exports = function (req, res) {
            // .attr('data-date', d => d.date)
            .append('title')
            .text(d => `Employee #${d.count}: ${d.name}\n${moment(d.date).format('dddd, MMMM Do YYYY')}`);
-           
+
         svg.append('g')
            .attr('transform', `translate(0, ${height})`)
            .call(d3.axisBottom(x));
@@ -100,15 +100,20 @@ exports = module.exports = function (req, res) {
            .text('Employees');
 
         locals.svg = d3n.svgString();
-        view.render('employee-count');
+        // view.render('employee-count');
+        res.render('pages/employee-count', locals)
       }
     )
     .catch(
       err => {
         console.log('Error generating report.', err);
-        req.flash('error', 'Error generating report');
+        // req.flash('error', 'Error generating report');
         res.redirect('/');
       }
     )
 
 };
+
+module.exports = {
+  index
+}

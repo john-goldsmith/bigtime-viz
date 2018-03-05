@@ -1,11 +1,11 @@
-const keystone = require('keystone');
+const namespace = require('../config/namespace')
 
 /**
  * [isValidStaff description]
  * @param  {[type]}  value [description]
  * @return {Boolean}       [description]
  */
-function isValidStaff(value) {
+function isValidProject(value) {
   return !Number.isNaN(Number.parseInt(value, 10))
 }
 
@@ -14,8 +14,8 @@ function isValidStaff(value) {
  * @param  {[type]}  req [description]
  * @return {Boolean}     [description]
  */
-function hasValidStaffCookie(req) {
-  return hasStaffCookie(req) ? isValidStaff(getStaffCookie(req)) : false;
+function hasValidProjectCookie(req) {
+  return hasProjectCookie(req) ? isValidProject(getProjectCookie(req)) : false;
 }
 
 /**
@@ -23,8 +23,8 @@ function hasValidStaffCookie(req) {
  * @param  {[type]}  req [description]
  * @return {Boolean}     [description]
  */
-function hasValidStaffQueryParam(req) {
-  return hasStaffQueryParam(req) ? isValidStaff(getStaffQueryParam(req)) : false;
+function hasValidProjectQueryParam(req) {
+  return hasProjectQueryParam(req) ? isValidProject(getProjectQueryParam(req)) : false;
 }
 
 /**
@@ -32,8 +32,8 @@ function hasValidStaffQueryParam(req) {
  * @param  {[type]}  req [description]
  * @return {Boolean}     [description]
  */
-function hasStaffQueryParam(req) {
-  return req.query && req.query.staff;
+function hasProjectQueryParam(req) {
+  return req.query && req.query.project;
 }
 
 /**
@@ -41,9 +41,9 @@ function hasStaffQueryParam(req) {
  * @param  {[type]}  req [description]
  * @return {Boolean}     [description]
  */
-function hasStaffCookie(req) {
-  const namespace = keystone.get('namespace');
-  return req.cookies && req.cookies[`${namespace}.lastSelectedStaff`];
+function hasProjectCookie(req) {
+  // const namespace = namespace;
+  return req.cookies && req.cookies[`${namespace}.lastSelectedProject`];
 }
 
 /**
@@ -51,8 +51,8 @@ function hasStaffCookie(req) {
  * @param  {[type]} req [description]
  * @return {[type]}     [description]
  */
-function getStaffQueryParam(req) {
-  return req.query.staff;
+function getProjectQueryParam(req) {
+  return req.query.project;
 }
 
 /**
@@ -60,9 +60,9 @@ function getStaffQueryParam(req) {
  * @param  {[type]} req [description]
  * @return {[type]}     [description]
  */
-function getStaffCookie(req) {
-  const namespace = keystone.get('namespace');
-  return req.cookies[`${namespace}.lastSelectedStaff`]; // || ...
+function getStaffProject(req) {
+  // const namespace = namespace;
+  return req.cookies[`${namespace}.lastSelectedProject`]; // || ...
 }
 
 /**
@@ -70,10 +70,10 @@ function getStaffCookie(req) {
  * @param  {[type]} req [description]
  * @return {[type]}     [description]
  */
-function getSelectedStaff(req) {
-  if (hasValidStaffQueryParam(req)) return getStaffQueryParam(req);
-  if (hasValidStaffCookie(req)) return getStaffCookie(req);
-  throw new Error('Error getting selected staff');
+function getSelectedProject(req) {
+  if (hasValidProjectQueryParam(req)) return getProjectQueryParam(req);
+  if (hasValidProjectCookie(req)) return getProjectCookie(req);
+  throw new Error('Error getting selected project');
 }
 
-module.exports = getSelectedStaff;
+module.exports = getSelectedProject;

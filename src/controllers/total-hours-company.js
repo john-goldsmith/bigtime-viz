@@ -1,18 +1,18 @@
-const keystone = require('keystone'),
-      moment = require('moment'),
+const moment = require('moment'),
       d3Node = require('d3-node'),
       d3 = require('d3'),
-      utils = require('../../utils');
+      utils = require('../utils'),
+      timeRanges = require('../config/time-ranges'),
+      namespace = require('../config/namespace'),
+      bigTime = require('../config/bigtime')
 
-exports = module.exports = function (req, res) {
+function index(req, res, next) {
 
   const d3n = new d3Node({
           d3Module: d3
         }),
-        view = new keystone.View(req, res),
         locals = res.locals,
         reportId = process.env.BIGTIME_TOTAL_HOURS_COMPANY_REPORT_ID,
-        timeRanges = keystone.get('timeRanges'),
         selectedTimeRange = utils.getSelectedTimeRange(req),
         includeWeekends = utils.includeWeekends(req),
         margin = {
@@ -41,9 +41,9 @@ exports = module.exports = function (req, res) {
   locals.selectedTimeRange = selectedTimeRange;
   locals.includeWeekends = includeWeekends;
 
-  res.cookie(`${keystone.get('namespace')}.lastSelectedTimeRange`, selectedTimeRange);
-  res.cookie(`${keystone.get('namespace')}.includeWeekends`, includeWeekends);
-  
+  res.cookie(`${namespace}.lastSelectedTimeRange`, selectedTimeRange);
+  res.cookie(`${namespace}.includeWeekends`, includeWeekends);
+
   const body = {
     DT_END: moment().format('YYYY-MM-DD')
   }
@@ -55,10 +55,10 @@ exports = module.exports = function (req, res) {
     body.DT_BEGIN = moment().subtract(Number(duration[0]), duration[1]).format('YYYY-MM-DD');
   }
 
-  locals.bigTime.updateReportById(reportId, body)
+  bigTime.updateReportById(reportId, body)
     .then(
       () => {
-        return locals.bigTime.getReportById(reportId)
+        return bigTime.getReportById(reportId)
       }
     )
     .then(
@@ -79,7 +79,7 @@ exports = module.exports = function (req, res) {
             return (day !== 'sat' && day !== 'sun');
           }).map(item => ({date: item[dateIndex], hours: item[hoursIndex]}));
         }
-        
+
         data.forEach(d => {
           d.date = formatDate(d.date);
           d.hours = Number(d.hours);
@@ -130,18 +130,22 @@ exports = module.exports = function (req, res) {
            .attr('x', 0 - (height / 2))
            .attr('dy', '1em')
            .style('text-anchor', 'middle')
-           .text('Hours'); 
+           .text('Hours');
 
         locals.svg = d3n.svgString();
-        view.render('total-hours-company');
+        res.render('pages/total-hours-company', locals);
       }
     )
     .catch(
       err => {
         console.log('Error generating report.', err);
-        req.flash('error', 'Error generating report');
+        // req.flash('error', 'Error generating report');
         res.redirect('index');
       }
     )
 
 };
+
+module.exports = {
+  index
+}
