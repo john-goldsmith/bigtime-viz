@@ -1,6 +1,8 @@
 # BigTime Viz
 Visualization tool for BigTime data
 
+![](./public/images/screenshot.png)
+
 ## Running Locally
 1. `npm i`
 1. `npm start`
