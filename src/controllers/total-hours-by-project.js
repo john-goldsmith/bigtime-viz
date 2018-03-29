@@ -5,7 +5,7 @@ const moment = require('moment'),
       bigTime = require('../config/bigtime'),
       app = require('../config/express'),
       namespace = require('../config/namespace'),
-      timeRanges = require('../config/time-ranges')
+      { timeRanges } = require('../config/time-ranges')
 
 function index(req, res, next) {
 
@@ -166,6 +166,7 @@ function index(req, res, next) {
            .text('Hours');
 
         locals.svg = d3n.svgString();
+        console.log(locals.timeRanges)
         res.render('pages/total-hours-by-project', locals);
       }
     )

@@ -3,7 +3,7 @@ const d3Node = require('d3-node'),
       moment = require('moment'),
       utils = require('../utils'),
       namespace = require('../config/namespace'),
-      timeRanges = require('../config/time-ranges'),
+      { timeRanges } = require('../config/time-ranges'),
       bigTime = require('../config/bigtime')
 
 function index(req, res, next) {
